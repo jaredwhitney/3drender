@@ -11,9 +11,9 @@ import java.awt.geom.*;
 
 public class Engine	// Class declaration
 {
-public static JFrame frame;	// Declaring the window that the renderer will draw to
-static Cursor BLANK_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(16,16,BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "JREN_BLANK");
-static Cursor NORMAL_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	public static JFrame frame;	// Declaring the window that the renderer will draw to
+	static Cursor BLANK_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(16,16,BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "JREN_BLANK");
+	static Cursor NORMAL_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 	public static void main(String[] args)
 	{
 		new Engine(new paper());	// Creating a canvas to draw on, and passing it to a new instance of Engine so we are no longer in a static context.
