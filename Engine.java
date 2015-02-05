@@ -147,7 +147,6 @@ class paper extends JComponent implements MouseListener	// Making the paper clas
 			g2.drawString((int)(1000f/(timer.getTime()-lastTime))+" FPS",0,10);	// Draw the FPS to the upper-left hand corner of the screen
 			lastTime = timer.getTime();
 		}
-		//System.out.println(((SharedVector)qstor).crcalcs + " | " + qstor);
 	}
 	public void vertRay(BufferedImage i)	// Method that will figure out positions of the vertecies in the scene, and draw the image that the user will end up seeing, onto an image ('BufferedImage')
 	{
@@ -176,10 +175,10 @@ class paper extends JComponent implements MouseListener	// Making the paper clas
 				{
 					if (!(orig instanceof SharedVector))
 					{
-					orig.osub(camPos);	// need osub instead of sub to modify the vector that is ACTUALLY being used
-					orig.rotateZ(zrots/1000f, new Vector(0, 0, camz));
-					orig.rotateX(xrots/1000f, new Vector(0, 0, camz));
-					orig.osmul(iwidth*(1920f/iwidth));
+						orig.osub(camPos);	// need osub instead of sub to modify the vector that is ACTUALLY being used
+						orig.rotateZ(zrots/1000f, new Vector(0, 0, camz));
+						orig.rotateX(xrots/1000f, new Vector(0, 0, camz));
+						orig.osmul(iwidth*(1920f/iwidth));
 					}
 					else
 					{
@@ -190,10 +189,7 @@ class paper extends JComponent implements MouseListener	// Making the paper clas
 						sv.crcalcs.osub(camPos);	// need osub instead of sub to modify the vector that is ACTUALLY being used
 						sv.crcalcs.rotateZ(zrots/1000f, new Vector(0, 0, camz));
 						sv.crcalcs.rotateX(xrots/1000f, new Vector(0, 0, camz));
-						//System.out.print(sv.crcalcs);
 						sv.crcalcs.osmul(iwidth*(1920f/iwidth));
-						//sv.crcalcs.osmul(iwidth); //???
-						//System.out.println(" -> " + sv.crcalcs);
 						sv.calculated = true;
 						}
 					}
@@ -316,12 +312,10 @@ class paper extends JComponent implements MouseListener	// Making the paper clas
 				{
 					verts.add(SharedVector.smul(new Vector(Double.parseDouble(input.split(" ")[1])+x, -Double.parseDouble(input.split(" ")[2])+y, Double.parseDouble(input.split(" ")[3])+z), scale)); // comment out the "Shared" for non experimental version
 					Vector.count--;
-					//System.out.println("Vertex Declared\t"+Vector.count);
 				}
 				if (input.split(" ")[0].equals("f"))
 				{
 					tct++;
-					//System.out.println("Making a face\t"+Vector.count);
 					Vector point1 = verts.get(Integer.parseInt(input.split(" ")[1])-1);
 					Vector point2 = verts.get(Integer.parseInt(input.split(" ")[2])-1);
 					Vector point3 = verts.get(Integer.parseInt(input.split(" ")[3])-1);
@@ -335,7 +329,6 @@ class paper extends JComponent implements MouseListener	// Making the paper clas
 					Vector.count-=3;
 					otris.add(t);
 					tris.add(t);
-					//System.out.println("Face delcared\t"+Vector.count);
 				}
 				if (input.split(" ")[0].equals("usemtl"))
 				{
@@ -427,14 +420,14 @@ class Vector
 	public Vector(int x, int y, int z)
 	{
 		this.x = x;
-		this.y = -y;	//INCONSISTANT@@@
+		this.y = -y;	// INCONSISTANT
 		this.z = z;
 		count++;
 	}
 	public Vector(double x, double y, double z)
 	{
 		this.x = x;
-		this.y = y;		//INCONSISTANT@@@
+		this.y = y;		// INCONSISTANT
 		this.z = z;
 		count++;
 	}
@@ -506,7 +499,6 @@ class Vector
 		z+=center.z;
 		y+=center.y;
 	}
-	// write methods to rotate-y (yaw), and rotate around an arbitrary axis (for physics calculations)
 	public String toString()
 	{
 		return "<" + x + ", " + y + ", " + z + ">";
@@ -521,23 +513,23 @@ class Vector
 
 class SharedVector extends Vector
 {
-boolean calculated = false;
-boolean rcalc = false;
-Vector crcalcs = paper.origin;
-Vector v = paper.origin;
-int count = 0;
-public SharedVector(int x, int y, int z)
-{
-super(x, y, z);
-}
-public SharedVector(double x, double y, double z)
-{
-super(x, y, z);
-}
-public SharedVector deepCopy()
-{
-return this;
-}
+	boolean calculated = false;
+	boolean rcalc = false;
+	Vector crcalcs = paper.origin;
+	Vector v = paper.origin;
+	int count = 0;
+	public SharedVector(int x, int y, int z)
+	{
+		super(x, y, z);
+	}
+	public SharedVector(double x, double y, double z)
+	{
+		super(x, y, z);
+	}
+	public SharedVector deepCopy()
+	{
+		return this;
+	}
 	public static SharedVector smul(Vector v, double s)
 	{
 		return new SharedVector(v.x*s, v.y*s, v.z*s);
@@ -664,19 +656,15 @@ class Triangle implements Comparable<Triangle>
 		{
 			//cast a ray through the pixel
 			Vector ytt = Func.pointTri((int)p.x, (int)p.y, this); // NEEDS TO BE A THING!!!   makes a ray from cam to x, y and returns Vector representing intersection with the Triangle given
-			//System.out.println(ytt);
 			//rotate the a copy of the triangle *and the returned point* to be aligned to the z axis (has no depth)
-//			Triangle copy = deepCopy().rotateX(/*value*/).rotateY(/*value*/).rotateZ(/*value*/);
 			//use the x,y relative to the anchor to determine u,v
 			int u = -(int)(ytt.x-space.verts[0].x);
-			//System.out.println(ytt.x + " : " + space.verts[0].x);
 			int v = -(int)(ytt.y-space.verts[0].y);
 			if (u<0)
 				u=0;
 			if (v<0)
 				v=0;
 			//draw to the screen
-			//System.out.println(u + ", " + v + " to " + (int)p.x + ", " + (int)p.y);
 			try{
 				canvas.setRGB((int)p.x, (int)p.y, tex.getRGB(u%255, v%255));	// also needs to be adjusted for psc, but then again, so does the rest of the function... and barell... :|
 			} catch(Exception e) {}
@@ -720,13 +708,8 @@ class Triangle implements Comparable<Triangle>
 		double scale = Math.sqrt(Math.pow(space.verts[2].x-space.verts[1].x, 2)+Math.pow(space.verts[2].y-space.verts[1].y, 2));
 		trans.scale(scale/(float)test.getWidth(), scale/(float)test.getHeight());
 		max = degrees;
-		//g2.setClip(poly);
 		Vector a = space.verts[2];
 		Vector b = space.verts[1];
-		for (int x = 0; x < test.getWidth(); x++)
-		{
-			//double scale = (((a.y-by)/(a.x-b.x))*x+ax)/test.getHeight();
-		}
 		g2.drawImage(test, trans, null);
 	}
 	public ArrayList<Point> pixels()
@@ -1101,10 +1084,10 @@ class Func
 				if (sX-xskip>0&&sX+1<img.getWidth()&&sY-yskip-1>0&&sY+1<img.getHeight()&&y-yskip-1>0&&x-xskip>0)
 				{
 					try{
-					if (paper.psc == 1)
-						copySrcIntoDstAt(ret, img, xskip, yskip, x, y, sX, sY);
-					else
-						fill(ret, img, xskip, yskip, x, y, sX, sY);
+						if (paper.psc == 1)
+							copySrcIntoDstAt(ret, img, xskip, yskip, x, y, sX, sY);
+						else
+							fill(ret, img, xskip, yskip, x, y, sX, sY);
 					}
 					catch (Exception e){e.printStackTrace();System.exit(0);}
 				}
@@ -1138,54 +1121,13 @@ class Func
 		}
 	}
 	
-	//00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	
 	public static Vector pointTri(int sx, int sy, Triangle p)
 	{
 		Vector q = new Vector(paper.camx, 0, paper.camz);
-		/*for (Vector i : p.verts)
-		{
-			i.rotateZ(paper.mxrot/1000f, new Vector(0, 0, paper.camz));
-			i.rotateX(paper.myrot/1000f, new Vector(0, 0, paper.camz));
-			//System.out.println(i);
-		}*/
 		Ray r = new Ray(q, new Vector((sx-paper.iwidth/2)/6400f, (sy-paper.iheight/2)/6400f, 0));
-		//System.out.println("Cast ray from " + r.origin + " to " + r.direction);
 		double t = 0;
-		t = -( Vector.dot(p.normal, r.origin) + p.D  ) / ( Vector.dot(p.normal, r.direction) );
-		//System.out.println("t:\t"+t);
-		//Vector v = Vector.add(Vector.smul(r.direction, t), r.origin);
-		//Vector a = Vector.sub(p.verts[1], p.verts[0]);
-		//Vector b = Vector.sub(v, p.verts[0]);
-		//Vector c = Vector.cross(a, b);
-		//if (Vector.dot(c, p.normal) > 0)
-		//{
-			//System.out.println("Passed 1st test!");
-			//a = Vector.sub(p.verts[2], p.verts[1]);
-			//b = Vector.sub(v, p.verts[1]);
-			//c = Vector.cross(a, b);
-			//if (Vector.dot(c, p.normal) > 0)
-			//{
-				//System.out.println("Passed 2nd test!");
-				//a = Vector.sub(p.verts[0], p.verts[2]);
-				//b = Vector.sub(v, p.verts[2]);
-				//c = Vector.cross(a, b);
-				//if (Vector.dot(c, p.normal) > 0)
-				//{
-					//System.out.println("Passed all tests!");
-					//System.exit(0);
-					return Vector.smul(Vector.add(Vector.smul(r.direction, t), r.origin), 1f/1000);
-				//}
-			//}
-		//}
-		//else
-		//System.out.println("Fail test1");
-		//System.out.println("No intersection.");
-		//return paper.origin;
+		t = -(Vector.dot(p.normal, r.origin) + p.D) / (Vector.dot(p.normal, r.direction));
 	}
-	
-	//00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	
 
 }
 
